@@ -48,22 +48,18 @@ option(BUILD_SHARED_LIBS OFF)
 include(FetchContent)
 if(BUILD_SHARED_LIBS)
   message(STATUS "Building Xyce with plugin compatibility")
-  #the old bash implementation
-  configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/buildxyceplugin.in ${CMAKE_CURRENT_BINARY_DIR}/buildxyceplugin )
-  # new cmake implementation
-  #configure_file(
-  #${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt.in ${CMAKE_CURRENT_BINARY_DIR}/CMakeLists.txt)
+
   FetchContent_DECLARE(
     ADMS
     GIT_REPOSITORY https://github.com/Qucs/ADMS.git
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/_deps/adms-src)
+  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR})
   FetchContent_GetProperties(ADMS)
   if(NOT adms_POPULATED)
     message(STATUS "Installing required library Qucs/ADMS")
     FetchContent_Populate(adms)
     add_subdirectory(${adms_SOURCE_DIR} ${adms_BINARY_DIR})
   endif()
+  install(EXPORT XyceStatic DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 else()
   message(STATUS "Plugin compatibility not enabled")
 endif()
